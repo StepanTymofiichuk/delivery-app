@@ -60,15 +60,17 @@ function addCartItem (event) {
 
 // add item to local storage
 function storeItemLocally(itemImage, itemTitle, itemPrice) {
-    localStorage.removeItem('cart');
-    console.log(itemImage, itemTitle, itemPrice);
+    //localStorage.removeItem('cart');
+    var cartItems = [];
     let cartItem = {
         image: itemImage,
         title: itemTitle,
         price: itemPrice
     }
     console.log(cartItem);
-    let objSerialized = JSON.stringify(cartItem);
+    cartItems.push(cartItem);
+    cartItems = cartItems.concat(JSON.parse(localStorage.getItem('cart')||'[]'));
+    let objSerialized = JSON.stringify(cartItems);
     localStorage.setItem("cart", objSerialized)
     console.log(localStorage);
     alert("Added to Cart (into local storage)");
@@ -77,24 +79,27 @@ function storeItemLocally(itemImage, itemTitle, itemPrice) {
 function appendProduct() {
     let objParsed = JSON.parse(localStorage.getItem("cart"));
     //console.log(objParsed);
-    var container = document.getElementsByClassName("shopping-cart-container")[0];
-    var cartContents = `
-    <div class="container3-item">
-    <div class="cart-item-image">
-      ${objParsed.image}
-    </div>
-    <div class="cart-item">
-      <p>${objParsed.title}</p>
-      <p class="item-price">Price: ${objParsed.price}</p>
-      <input type="number" class="item-qty" value="4">
-      <button type="button" name="button" class="remove-btn">Remove</button>
-    </div>
-  </div>`
-  var div = document.createElement("div");
-  div.innerHTML = cartContents;
-  div.getElementsByClassName("remove-btn")[0].addEventListener("click", removeCartItem);
-  div.getElementsByClassName("item-qty")[0].addEventListener("change", qtyChanged);
-  container.append(div);
+    for(var i = 0; i < objParsed.length; i++) {
+        var cartItems = objParsed[i];
+        var container = document.getElementsByClassName("shopping-cart-container")[0];
+        var cartContents = `
+        <div class="container3-item">
+        <div class="cart-item-image">
+          ${cartItems.image}
+        </div>
+        <div class="cart-item">
+          <p>${cartItems.title}</p>
+          <p class="item-price">Price: ${cartItems.price}</p>
+          <input type="number" class="item-qty" value="4">
+          <button type="button" name="button" class="remove-btn">Remove</button>
+        </div>
+      </div>`
+      var div = document.createElement("div");
+      div.innerHTML = cartContents;
+      div.getElementsByClassName("remove-btn")[0].addEventListener("click", removeCartItem);
+      div.getElementsByClassName("item-qty")[0].addEventListener("change", qtyChanged);
+      container.append(div);
+    }
 }
 
 function removeCartItem (event) {

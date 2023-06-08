@@ -154,6 +154,7 @@ a {
   border-radius: 12%;
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer;
 }
 .total-container {
   display: flex;
